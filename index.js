@@ -22,16 +22,11 @@ const match = (node, value, ignores = [], strict = false) => {
     ignores = [ignores];
   }
   return (
-    ignores.find(pattern => {
-      if (isFunction(pattern) && pattern(node, value)) {
-        return true;
-      } else if (!strict && isRegExp(pattern) && pattern.test(value)) {
-        return true;
-      } else if (pattern === value) {
-        return true;
-      }
-      return false;
-    }) !== undefined
+    ignores.find(pattern =>
+      isFunction(pattern) && pattern(node, value) ||
+      !strict && isRegExp(pattern) && pattern.test(value) ||
+      pattern === value
+    ) !== undefined
   );
 };
 
