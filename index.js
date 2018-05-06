@@ -22,48 +22,61 @@ const match = (node, value, ignores = [], strict = false) => {
     ignores = [ignores];
   }
   return (
-    ignores.find(pattern =>
-      isFunction(pattern) && pattern(node, value) ||
-      !strict && isRegExp(pattern) && pattern.test(value) ||
-      pattern === value
+    ignores.find(
+      pattern =>
+        isFunction(pattern) && pattern(node, value) ||
+        !strict && isRegExp(pattern) && pattern.test(value) ||
+        pattern === value
     ) !== undefined
   );
 };
 
 const checkAtrule = (node, ignores = []) =>
   match(node, `@${node.name}`, ignores, true) ||
-  match(node, node.name, ignores);
-
-const checkRule = (node, ignores = []) => match(node, node.selector, ignores);
+  match(node, node.params, ignores);
 
 const checkDecl = (node, ignores = []) =>
   match(node, node.toString(), ignores) ||
   match(node, node.prop, ignores, true) ||
   match(node, node.value, ignores, true);
 
+
+const walker = (root, options = _default) => {
+  root.walkDecls(decl => {
+    checkDecl(decl, options.decl) && decl.remove();
+  });
+
+  root.walkRules(rule => {
+    const selectors = rule.selectors.filter(
+      selector => !match(rule, selector, options.rule)
+    );
+
+    if (rule.nodes.length === 0) {
+      rule.remove();
+      return;
+    }
+
+    if (selectors.length) {
+      rule.selectors = selectors;
+    } else {
+      rule.remove();
+    }
+  });
+
+  root.walkAtRules(rule => {
+    if (isFunction(rule.walk)) {
+      walker(rule, options);
+    }
+
+    if (rule.nodes.length === 0 || checkAtrule(rule, options.atrule)) {
+      rule.remove();
+    }
+  });
+};
+
 module.exports = postcss.plugin('postcss-discard', function (opts) {
   const options = Object.assign({}, _default, opts || {});
 
-  // const matcher = getMatcher(opts.ignore);
-
   // Work with options here
-  return root => {
-    // Transform each rule here
-    root.walk(node => {
-      // node types: decl, rule, atrule
-      if (node.type === 'atrule' && checkAtrule(node, options.atrule)) {
-        node.remove();
-        return;
-      }
-
-      if (node.type === 'rule' && checkRule(node, options.rule)) {
-        node.remove();
-        return;
-      }
-
-      if (node.type === 'decl' && checkDecl(node, options.decl)) {
-        node.remove();
-      }
-    });
-  };
+  return root => walker(root, options);
 });

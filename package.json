@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/bezoerb/postcss-discard",
   "dependencies": {
+    "common-tags": "^1.7.2",
     "lodash": "^4.17.10",
     "postcss": "^6.0.16"
   },
@@ -35,8 +36,20 @@
       "jest": true
     },
     "rules": {
-      "indent": [2, 2, {"SwitchCase": 1}]
+      "indent": [
+        2,
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ]
     }
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 80,
+    "bracketSpacing": true
   },
   "jest": {
     "testEnvironment": "node"
