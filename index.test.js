@@ -165,3 +165,17 @@ it('removes declarations by filter function', () => {
     expect(css).toMatch('@supports not (font-variation-setting');
   });
 });
+
+it('removes font-face && print', () => {
+  return run(styles, { atrule: ['@font-face', /print/] }).then(({ css }) => {
+    expect(css).toMatch('body');
+    expect(css).toMatch('html');
+    expect(css).not.toMatch('font-face');
+    expect(css).not.toMatch('@media only print');
+    expect(css).not.toMatch('color: #000');
+    expect(css).not.toMatch('Glyphicons Halflings');
+    expect(css).toMatch('main h1 > p');
+    expect(css).toMatch('.test');
+    expect(css).toMatch('@supports not (font-variation-setting');
+  });
+});
