@@ -16,6 +16,9 @@
   "bugs": {
     "url": "https://github.com/bezoerb/postcss-discard/issues"
   },
+  "engines": {
+    "node": ">=6"
+  },
   "homepage": "https://github.com/bezoerb/postcss-discard",
   "dependencies": {
     "common-tags": "^1.7.2",
