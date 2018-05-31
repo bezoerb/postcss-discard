@@ -56,7 +56,7 @@ const walker = (root, options = _default) => {
       return;
     }
 
-    if (selectors.length) {
+    if (selectors && selectors.length) {
       rule.selectors = selectors;
     } else {
       rule.remove();
@@ -68,7 +68,9 @@ const walker = (root, options = _default) => {
       walker(rule, options);
     }
 
-    if (rule.nodes.length === 0 || checkAtrule(rule, options.atrule)) {
+    const remove = !rule.nodes || rule.nodes.length === 0;
+
+    if (remove || checkAtrule(rule, options.atrule)) {
       rule.remove();
     }
   });
