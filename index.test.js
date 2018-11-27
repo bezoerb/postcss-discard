@@ -1,62 +1,63 @@
+/* eslint-env jest */
 const postcss = require('postcss');
-const { stripIndents } = require('common-tags');
+const {stripIndents} = require('common-tags');
 
 const plugin = require('./');
 
 const styles = stripIndents`
 html,body {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 @font-face {
-	font-family: 'Glyphicons Halflings';
+  font-family: 'Glyphicons Halflings';
 }
 
 .my.awesome.selector {
-	width: 100%;
-	background: url('/myImage.jpg');
+  width: 100%;
+  background: url('/myImage.jpg');
 }
 
 main h1 > p {
-	font-size: 1.2rem;
+  font-size: 1.2rem;
 }
 
 
 
 @media only screen and (max-width: 768px) {
-	.test {
-		display: block;
-	}
+  .test {
+    display: block;
+  }
 
-	main h1 > p {
-		font-size: 1rem;
-	}
+  main h1 > p {
+    font-size: 1rem;
+  }
 }
 
 @media only print {
-	h1 {
-		color: #000;
-	}
+  h1 {
+    color: #000;
+  }
 }
 
 @supports not (font-variation-settings: 'XHGT' 0.7) {
+  .testa {
+    display: block;
+  }
+  @media only screen and (max-width: 768px) {
     .testa {
-		display: block;
-	}
-    @media only screen and (max-width: 768px) {
-        .testa {
-            display: none;
-        }
+      display: none;
     }
+  }
 }
 `;
 
 function run(input, opts, output = '') {
   return postcss([plugin(opts)])
-    .process(input, { from: undefined })
+    .process(input, {from: undefined})
     .then(result => {
-      expect(result.warnings().length).toBe(0);
+      expect(result.warnings()).toHaveLength(0);
       if (output) {
         expect(result.css).toEqual(output);
       }
@@ -69,9 +70,9 @@ it('returns unchanged css', () => {
 });
 
 it('removes atrule', () => {
-  return run(styles, { atrule: '@font-face' }).then(({ css }) => {
+  return run(styles, {atrule: '@font-face'}).then(({css}) => {
     expect(css).not.toMatch('@font-face');
-    expect(css).not.toMatch('font-family: \'Glyphicons Halflings\'');
+    expect(css).not.toMatch(`font-family: 'Glyphicons Halflings'`);
     expect(css).toMatch('html');
     expect(css).toMatch('.my.awesome.selector');
     expect(css).toMatch('main h1 > p');
@@ -81,7 +82,7 @@ it('removes atrule', () => {
 });
 
 it('works regular expressions', () => {
-  return run(styles, { rule: /body/ }).then(({ css }) => {
+  return run(styles, {rule: /body/}).then(({css}) => {
     expect(css).not.toMatch('body');
     expect(css).toMatch('html');
     expect(css).toMatch('font-face');
@@ -93,7 +94,7 @@ it('works regular expressions', () => {
 });
 
 it('removes everything', () => {
-  return run(styles, { decl: /.*/ }).then(({ css }) => {
+  return run(styles, {decl: /.*/}).then(({css}) => {
     console.log(css);
     expect(css).not.toMatch('body');
     expect(css).not.toMatch('html');
@@ -106,16 +107,22 @@ it('removes everything', () => {
 });
 
 it('removes all rules', () => {
-  return run(styles, { rule: /.*/ }, stripIndents`
+  return run(
+    styles,
+    {rule: /.*/},
+    stripIndents`
     @font-face {
       font-family: 'Glyphicons Halflings';
     }
-  `);
+  `
+  );
 });
 
-
 it('removes media queries width max-width: 768px', () => {
-  return run(styles, { atrule: /max-width: 768px/ }, stripIndents`
+  return run(
+    styles,
+    {atrule: /max-width: 768px/},
+    stripIndents`
     html,body {
       margin: 0;
       padding: 0;
@@ -145,16 +152,17 @@ it('removes media queries width max-width: 768px', () => {
         display: block;
       }
     }
-  `);
+  `
+  );
 });
 
 it('removes declarations by filter function', () => {
-  const filter = (node, value) => {
+  function filter(node, value) {
     expect(node).toHaveProperty('type', 'decl');
-    return node.prop === 'width' || value === 'url(\'/myImage.jpg\')';
-  };
+    return node.prop === 'width' || value === `url('/myImage.jpg')`;
+  }
 
-  return run(styles, { decl: filter }).then(({ css }) => {
+  return run(styles, {decl: filter}).then(({css}) => {
     expect(css).toMatch('body');
     expect(css).toMatch('html');
     expect(css).toMatch('font-face');
@@ -167,7 +175,7 @@ it('removes declarations by filter function', () => {
 });
 
 it('removes font-face && print', () => {
-  return run(styles, { atrule: ['@font-face', /print/] }).then(({ css }) => {
+  return run(styles, {atrule: ['@font-face', /print/]}).then(({css}) => {
     expect(css).toMatch('body');
     expect(css).toMatch('html');
     expect(css).not.toMatch('font-face');

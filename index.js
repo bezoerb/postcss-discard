@@ -9,47 +9,44 @@ const _default = {
   decl: []
 };
 
-/**
- * Identify ignored selectors
- * @param {object} node
- * @param {string} value
- * @param {array} ignores
- * @param {boolean} strict
- * @returns {Function}
- */
-const match = (node, value, ignores = [], strict = false) => {
+const match = function (node, value, ignores = [], strict = false) {
   if (!isArray(ignores)) {
     ignores = [ignores];
   }
   return (
-    ignores.find(
-      pattern =>
-        isFunction(pattern) && pattern(node, value) ||
-        !strict && isRegExp(pattern) && pattern.test(value) ||
+    ignores.find(pattern => {
+      return (
+        (isFunction(pattern) && pattern(node, value)) ||
+        (!strict && isRegExp(pattern) && pattern.test(value)) ||
         pattern === value
-    ) !== undefined
+      );
+    }) !== undefined
   );
 };
 
-const checkAtrule = (node, ignores = []) =>
-  match(node, `@${node.name}`, ignores, true) ||
-  match(node, node.params, ignores);
+const checkAtrule = function (node, ignores = []) {
+  return match(node, '@' + node.name, ignores, true) || match(node, node.params, ignores);
+};
 
-const checkDecl = (node, ignores = []) =>
-  match(node, node.toString(), ignores) ||
-  match(node, node.prop, ignores, true) ||
-  match(node, node.value, ignores, true);
+const checkDecl = function (node, ignores = []) {
+  return (
+    match(node, node.toString(), ignores) ||
+    match(node, node.prop, ignores, true) ||
+    match(node, node.value, ignores, true)
+  );
+};
 
-
-const walker = (root, options = _default) => {
+const walker = function (root, options = _default) {
   root.walkDecls(decl => {
-    checkDecl(decl, options.decl) && decl.remove();
+    if (checkDecl(decl, options.decl)) {
+      decl.remove();
+    }
   });
 
   root.walkRules(rule => {
-    const selectors = rule.selectors.filter(
-      selector => !match(rule, selector, options.rule)
-    );
+    const selectors = rule.selectors.filter(selector => {
+      return !match(rule, selector, options.rule);
+    });
 
     if (rule.nodes.length === 0) {
       rule.remove();
@@ -76,9 +73,11 @@ const walker = (root, options = _default) => {
   });
 };
 
-module.exports = postcss.plugin('postcss-discard', function (opts) {
+module.exports = postcss.plugin('postcss-discard', opts => {
   const options = Object.assign({}, _default, opts || {});
 
   // Work with options here
-  return root => walker(root, options);
+  return function (root) {
+    return walker(root, options);
+  };
 });
