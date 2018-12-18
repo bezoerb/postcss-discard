@@ -1,7 +1,8 @@
 /* eslint-env jest */
 const postcss = require('postcss');
 const {stripIndents} = require('common-tags');
-
+const fs = require('fs');
+const path = require('path');
 const plugin = require('./');
 
 const styles = stripIndents`
@@ -65,6 +66,22 @@ function run(input, opts, output = '') {
     });
 }
 
+const read = (i, type) => {
+  return fs.readFileSync(path.join(__dirname, `test/fixtures/${i}-${type}.css`), 'utf8');
+};
+
+const testCss = (i, r = true) => {
+  const all = read(i, 'all');
+  const critical = (r && read(i, 'critical')) || path.join(__dirname, `test/fixtures/${i}-critical.css`);
+  const diff = read(i, 'diff');
+
+  return run(all, {css: critical}, diff);
+};
+
+it('removes css defined as string', async () => Promise.all([1, 2, 3, 4, 5].map(i => testCss(i))));
+
+it('removes css defined as file', async () => Promise.all([1, 2, 3, 4, 5].map(i => testCss(i, false))));
+
 it('returns unchanged css', () => {
   return run(styles, {}, styles);
 });
@@ -95,7 +112,6 @@ it('works regular expressions', () => {
 
 it('removes everything', () => {
   return run(styles, {decl: /.*/}).then(({css}) => {
-    console.log(css);
     expect(css).not.toMatch('body');
     expect(css).not.toMatch('html');
     expect(css).not.toMatch('font-face');
@@ -127,26 +143,26 @@ it('removes media queries width max-width: 768px', () => {
       margin: 0;
       padding: 0;
     }
-    
+
     @font-face {
       font-family: 'Glyphicons Halflings';
     }
-    
+
     .my.awesome.selector {
       width: 100%;
       background: url('/myImage.jpg');
     }
-    
+
     main h1 > p {
       font-size: 1.2rem;
     }
-    
+
     @media only print {
       h1 {
         color: #000;
       }
     }
-    
+
     @supports not (font-variation-settings: 'XHGT' 0.7) {
         .testa {
         display: block;
