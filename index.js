@@ -3,6 +3,10 @@ const postcss = require('postcss');
 const isFunction = require('lodash/isFunction');
 const isArray = require('lodash/isArray');
 const isRegExp = require('lodash/isRegExp');
+const CleanCSS = require('clean-css');
+
+const c = new CleanCSS({level: 2});
+const minify = str => c.minify(`a{${str}}`).styles;
 
 const _default = {
   atrule: [],
@@ -38,14 +42,22 @@ const checkDecl = function (node, ignores = []) {
   );
 };
 
+const normalize = (str = '', decl = true) => {
+  if (decl) {
+    str = minify(str);
+  }
+
+  return str.replace(/"/g, '\'').trim();
+};
+
 const getIdentifier = (node, selector = '') => {
   switch (node.type) {
     case 'decl':
-      return getIdentifier(node.parent);
+      return normalize(getIdentifier(node.parent), false);
     case 'rule':
-      return `${getIdentifier(node.parent)} ${selector || node.selector}`.trim();
+      return normalize(`${getIdentifier(node.parent)} ${selector || node.selector}`, false);
     case 'atrule':
-      return `${getIdentifier(node.parent)} @${node.name} ${node.params}`.trim();
+      return normalize(`${getIdentifier(node.parent)} @${node.name} ${node.params}`, false);
     default:
       return '';
   }
@@ -65,7 +77,7 @@ const getCssMapping = css => {
   ast.walkDecls(decl => {
     const id = getIdentifier(decl);
     result[id] = result[id] || [];
-    result[id].push(decl.toString());
+    result[id].push(normalize(decl.toString()));
   });
 
   ast.walkRules(rule => {
@@ -73,7 +85,7 @@ const getCssMapping = css => {
       const id = getIdentifier(rule, selector);
       rule.walkDecls(decl => {
         result[id] = result[id] || [];
-        result[id].push(decl.toString());
+        result[id].push(normalize(decl.toString()));
       });
     });
   });
@@ -82,11 +94,11 @@ const getCssMapping = css => {
 };
 
 const walker = function (root, options = _default) {
-  const get = key => (options._cssDiscard && options._cssDiscard[key]) || [];
-
+  const {_testCss} = options;
   root.walkDecls(decl => {
     const id = getIdentifier(decl);
-    if (checkDecl(decl, options.decl) || get(id).includes(decl.toString())) {
+
+    if (checkDecl(decl, options.decl) || _testCss(id, decl)) {
       decl.remove();
     }
   });
@@ -96,7 +108,7 @@ const walker = function (root, options = _default) {
       const id = getIdentifier(rule, selector);
       let drop = true;
       rule.walkDecls(decl => {
-        drop = drop && get(id).includes(decl.toString());
+        drop = drop && _testCss(id, decl);
       });
 
       return !drop && !match(rule, selector, options.rule);
@@ -118,9 +130,7 @@ const walker = function (root, options = _default) {
     if (isFunction(rule.walk)) {
       walker(rule, options);
     }
-
     const remove = !rule.nodes || rule.nodes.length === 0;
-
     if (remove || checkAtrule(rule, options.atrule)) {
       rule.remove();
     }
@@ -131,7 +141,13 @@ module.exports = postcss.plugin('postcss-discard', opts => {
   const options = Object.assign({}, _default, opts || {});
 
   if (options.css) {
-    options._cssDiscard = getCssMapping(options.css);
+    const mapping = getCssMapping(options.css);
+    options._testCss = (key, decl) => {
+      const arr = (mapping && mapping[key]) || [];
+      return arr.includes(normalize(decl.toString()));
+    };
+  } else {
+    options._testCss = () => false;
   }
 
   // Work with options here
