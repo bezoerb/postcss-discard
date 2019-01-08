@@ -1,6 +1,6 @@
 # PostCSS Discard [![Build Status][ci-img]][ci]
 
-[PostCSS] plugin to discard rules by selector, RegExp, or @type. Also usable to generate a diff from two style-sheets
+[PostCSS] plugin to discard rules by selector, RegExp, or @type. Also usable to generate a diff from two stylesheets
 
 [postcss]: https://github.com/postcss/postcss
 [ci-img]: https://travis-ci.org/bezoerb/postcss-discard.svg
