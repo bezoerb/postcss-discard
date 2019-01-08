@@ -1,6 +1,6 @@
 # PostCSS Discard [![Build Status][ci-img]][ci]
 
-[PostCSS] plugin to discard rules by selector, RegExp or @type.
+[PostCSS] plugin to discard rules by selector, RegExp, or @type. Also usable to generate a diff from two style-sheets
 
 [postcss]: https://github.com/postcss/postcss
 [ci-img]: https://travis-ci.org/bezoerb/postcss-discard.svg
@@ -33,6 +33,14 @@ The function is invoked with two arguments (node, value).
 Return true if the element should be discarded.
 
 ## Examples
+
+### Diffing stylesheets
+
+```js
+postcss(discard({css: 'STYLES TO BE REMOVED'})).process('ORIGINAL CSS').css;
+```
+
+### Discard by specifying rules
 
 ```css
 .bg {
