@@ -78,9 +78,9 @@ const testCss = (i, r = true) => {
   return run(all, {css: critical}, diff);
 };
 
-it('removes css defined as string', () => Promise.all([1, 2, 3, 4, 5, 6].map(i => testCss(i))));
+it('removes css defined as string', () => Promise.all([1, 2, 3, 4, 5, 6, 7].map(i => testCss(i))));
 
-it('removes css defined as file', () => Promise.all([1, 2, 3, 4, 5, 6].map(i => testCss(i, false))));
+it('removes css defined as file', () => Promise.all([1, 2, 3, 4, 5, 6, 7].map(i => testCss(i, false))));
 
 it('returns unchanged css', () => {
   return run(styles, {}, styles);
