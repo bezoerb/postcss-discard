@@ -22,14 +22,14 @@
   "homepage": "https://github.com/bezoerb/postcss-discard",
   "dependencies": {
     "clean-css": "^4.2.1",
-    "common-tags": "^1.7.2",
+    "common-tags": "^1.8.0",
     "lodash": "^4.17.11",
-    "postcss": "^7.0.6"
+    "postcss": "^7.0.17"
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
-    "eslint-config-xo-space": "^0.20.0",
-    "jest": "^23.6.0"
+    "eslint": "^5.16.0",
+    "eslint-config-xo-space": "^0.21.0",
+    "jest": "^24.8.0"
   },
   "scripts": {
     "test": "jest && eslint *.js"

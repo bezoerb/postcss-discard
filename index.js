@@ -19,6 +19,7 @@ const match = function (node, value, ignores = [], strict = false) {
   if (!isArray(ignores)) {
     ignores = [ignores];
   }
+
   return (
     ignores.find(pattern => {
       return (
@@ -130,6 +131,7 @@ const walker = function (root, options = _default) {
     if (isFunction(rule.walk)) {
       walker(rule, options);
     }
+
     const remove = !rule.nodes || rule.nodes.length === 0;
     if (remove || checkAtrule(rule, options.atrule)) {
       rule.remove();

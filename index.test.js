@@ -62,6 +62,7 @@ function run(input, opts, output = '') {
       if (output) {
         expect(result.css).toEqual(output);
       }
+
       return result;
     });
 }
@@ -89,7 +90,7 @@ it('returns unchanged css', () => {
 it('removes atrule', () => {
   return run(styles, {atrule: '@font-face'}).then(({css}) => {
     expect(css).not.toMatch('@font-face');
-    expect(css).not.toMatch(`font-family: 'Glyphicons Halflings'`);
+    expect(css).not.toMatch('font-family: \'Glyphicons Halflings\'');
     expect(css).toMatch('html');
     expect(css).toMatch('.my.awesome.selector');
     expect(css).toMatch('main h1 > p');
@@ -175,7 +176,7 @@ it('removes media queries width max-width: 768px', () => {
 it('removes declarations by filter function', () => {
   function filter(node, value) {
     expect(node).toHaveProperty('type', 'decl');
-    return node.prop === 'width' || value === `url('/myImage.jpg')`;
+    return node.prop === 'width' || value === 'url(\'/myImage.jpg\')';
   }
 
   return run(styles, {decl: filter}).then(({css}) => {
