@@ -24,7 +24,8 @@
     "clean-css": "^4.2.1",
     "common-tags": "^1.8.0",
     "lodash": "^4.17.11",
-    "postcss": "^7.0.17"
+    "postcss": "^7.0.17",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
@@ -32,7 +33,9 @@
     "jest": "^24.8.0"
   },
   "scripts": {
-    "test": "jest && eslint *.js"
+    "test": "jest && eslint *.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "eslintConfig": {
     "extends": "xo-space"
@@ -45,5 +48,6 @@
   },
   "jest": {
     "testEnvironment": "node"
-  }
+  },
+  "snyk": true
 }
