@@ -3,7 +3,6 @@
 const fs = require('fs');
 const postcss = require('postcss');
 const isFunction = require('lodash/isFunction');
-const isArray = require('lodash/isArray');
 const isRegExp = require('lodash/isRegExp');
 const CleanCSS = require('clean-css');
 
@@ -18,7 +17,7 @@ const _default = {
 };
 
 const match = function (node, value, ignores = [], strict = false) {
-  if (!isArray(ignores)) {
+  if (!Array.isArray(ignores)) {
     ignores = [ignores];
   }
 
