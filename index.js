@@ -68,7 +68,7 @@ const getCssMapping = css => {
   let ast;
   try {
     ast = postcss.parse(css, {from: undefined});
-  } catch (err) {
+  } catch (error) {
     if (fs.existsSync(css)) {
       ast = postcss.parse(fs.readFileSync(css, 'utf8'), {from: undefined});
     }
@@ -120,7 +120,7 @@ const walker = function (root, options = _default) {
       return;
     }
 
-    if (selectors && selectors.length) {
+    if (selectors && selectors.length > 0) {
       rule.selectors = selectors;
     } else {
       rule.remove();

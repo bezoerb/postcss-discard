@@ -1,9 +1,9 @@
 /* eslint-env jest */
-const postcss = require('postcss');
-const {stripIndents} = require('common-tags');
 const fs = require('fs');
 const path = require('path');
-const plugin = require('./');
+const postcss = require('postcss');
+const {stripIndents} = require('common-tags');
+const plugin = require('.');
 
 const styles = stripIndents`
 html,body {
