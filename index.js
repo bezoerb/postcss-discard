@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const postcss = require('postcss');
 const isFunction = require('lodash/isFunction');
