@@ -37,6 +37,9 @@
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
   },
+  "files": [
+    "index.js"
+  ],
   "eslintConfig": {
     "extends": "xo-space"
   },
