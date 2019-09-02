@@ -1,8 +1,12 @@
 language: node_js
-cache: yarn
+
+git:
+  depth: 5
+
 node_js:
-  - node
-  - "8"
   - "6"
-install:
-  - YARN_IGNORE_ENGINES=true yarn
+  - "8"
+  - "10"
+  - "12"
+
+cache: npm

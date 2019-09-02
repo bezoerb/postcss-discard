@@ -1,7 +1,8 @@
+'use strict';
+
 const fs = require('fs');
 const postcss = require('postcss');
 const isFunction = require('lodash/isFunction');
-const isArray = require('lodash/isArray');
 const isRegExp = require('lodash/isRegExp');
 const CleanCSS = require('clean-css');
 
@@ -16,7 +17,7 @@ const _default = {
 };
 
 const match = function (node, value, ignores = [], strict = false) {
-  if (!isArray(ignores)) {
+  if (!Array.isArray(ignores)) {
     ignores = [ignores];
   }
 
@@ -68,7 +69,7 @@ const getCssMapping = css => {
   let ast;
   try {
     ast = postcss.parse(css, {from: undefined});
-  } catch (err) {
+  } catch (error) {
     if (fs.existsSync(css)) {
       ast = postcss.parse(fs.readFileSync(css, 'utf8'), {from: undefined});
     }
@@ -120,7 +121,7 @@ const walker = function (root, options = _default) {
       return;
     }
 
-    if (selectors && selectors.length) {
+    if (selectors && selectors.length > 0) {
       rule.selectors = selectors;
     } else {
       rule.remove();
