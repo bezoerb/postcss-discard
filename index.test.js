@@ -90,7 +90,21 @@ it('returns unchanged css', () => {
   return run(styles, {}, styles);
 });
 
-it('removes atrule', () => {
+it('removes @supports atrule', () => {
+  return run(styles, {atrule: ['@supports']}).then(({css}) => {
+    expect(css).toMatch('@font-face');
+    expect(css).toMatch('font-family: \'Glyphicons Halflings\'');
+    expect(css).toMatch('html');
+    expect(css).toMatch('.my.awesome.selector');
+    expect(css).toMatch('main h1 > p');
+    expect(css).toMatch('.test');
+    expect(css).toMatch('only print');
+    expect(css).not.toMatch('@supports');
+    expect(css).not.toMatch('.testa');
+  });
+});
+
+it('removes @font-face atrule', () => {
   return run(styles, {atrule: '@font-face'}).then(({css}) => {
     expect(css).not.toMatch('@font-face');
     expect(css).not.toMatch('font-family: \'Glyphicons Halflings\'');
