@@ -132,7 +132,9 @@ const walker = function (root, options = _default) {
     if (isFunction(rule.walk)) {
       walker(rule, options);
     }
+  });
 
+  root.walkAtRules(rule => {
     const remove = !rule.nodes || rule.nodes.length === 0;
     if (remove || checkAtrule(rule, options.atrule)) {
       rule.remove();
