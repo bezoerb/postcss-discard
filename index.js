@@ -2,8 +2,8 @@
 
 const fs = require('fs');
 const postcss = require('postcss');
-const isFunction = require('lodash/isFunction');
-const isRegExp = require('lodash/isRegExp');
+const isFunction = require('lodash.isfunction');
+const isRegExp = require('lodash.isregexp');
 const CleanCSS = require('clean-css');
 
 const c = new CleanCSS({level: 1});
