@@ -6,7 +6,7 @@ const isFunction = require('lodash/isFunction');
 const isRegExp = require('lodash/isRegExp');
 const CleanCSS = require('clean-css');
 
-const c = new CleanCSS({level: 2});
+const c = new CleanCSS({level: 1});
 const minify = str => c.minify(`a{${str}}`).styles;
 
 const _default = {
