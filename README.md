@@ -3,8 +3,8 @@
 [PostCSS] plugin to discard rules by selector, RegExp, or @type. Also usable to generate a diff from two stylesheets
 
 [postcss]: https://github.com/postcss/postcss
-[ci-img]: https://travis-ci.org/bezoerb/postcss-discard.svg
-[ci]: https://travis-ci.org/bezoerb/postcss-discard
+[ci-img]: https://github.com/bezoerb/postcss-discard/workflows/Tests/badge.svg
+[ci]: https://github.com/bezoerb/postcss-discard/actions?workflow=Tests
 
 ## Usage
 
