@@ -76,7 +76,7 @@ const read = (i, type) => {
 
 const testCss = (i, r = true) => {
   const all = read(i, 'all');
-  const critical = (r && read(i, 'critical')) || path.join(__dirname, `test/fixtures/${i}-critical.css`);
+  const critical = (r && read(i, 'critical')) || `test/fixtures/${i}-critical.css`;
   const diff = read(i, 'diff');
 
   return run(all, {css: critical}, diff);
