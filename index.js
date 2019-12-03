@@ -32,6 +32,11 @@ const match = function (node, value, ignores = [], strict = false) {
   );
 };
 
+const customMediaNameRegExp = /^custom-media$/i;
+const customMediaParamsRegExp = /^(--[A-z][\w-]*)\s+([\W\w]+)\s*$/;
+
+const checkCustomMedia = node => node.type === 'atrule' && customMediaNameRegExp.test(node.name) && customMediaParamsRegExp.test(node.params);
+
 const checkAtrule = function (node, ignores = []) {
   return match(node, '@' + node.name, ignores, true) || match(node, node.params, ignores);
 };
@@ -135,7 +140,7 @@ const walker = function (root, options = _default) {
   });
 
   root.walkAtRules(rule => {
-    const remove = !rule.nodes || rule.nodes.length === 0;
+    const remove = !checkCustomMedia(rule) && (!rule.nodes || rule.nodes.length === 0);
     if (remove || checkAtrule(rule, options.atrule)) {
       rule.remove();
     }
