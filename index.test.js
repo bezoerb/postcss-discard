@@ -225,3 +225,26 @@ it('removes font-face && print', () => {
     expect(css).toMatch('@supports not (font-variation-setting');
   });
 });
+
+it('removes media queries width @custom-media', () => {
+  const styles = stripIndents`
+  @custom-media --small only screen and (min-width: 480px);
+  @custom-media --medium only screen and (min-width: 768px);
+  @media (--small) {
+    .media-small {
+      color: red;
+    }
+  }
+  @media (--medium) {
+    .media-medium {
+      color: green;
+    }
+  }
+  `;
+  return run(styles, {atrule: /--medium/}).then(({css}) => {
+    expect(css).toMatch('@custom-media --small');
+    expect(css).toMatch('@media (--small)');
+    expect(css).not.toMatch('@custom-media --medium');
+    expect(css).not.toMatch('@media (--medium)');
+  });
+});
