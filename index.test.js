@@ -1,5 +1,5 @@
 /* eslint-env jest */
-
+/* eslint import/order:0 */
 'use strict';
 
 const fs = require('fs');
