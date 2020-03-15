@@ -29,6 +29,7 @@
   "devDependencies": {
     "common-tags": "^1.8.0",
     "jest": "^24.9.0",
+    "minimist": ">=1.2.2",
     "xo": "^0.24.0"
   },
   "scripts": {
