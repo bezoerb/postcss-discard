@@ -7,7 +7,7 @@ const isRegExp = require('lodash.isregexp');
 const CleanCSS = require('clean-css');
 
 const c = new CleanCSS({level: 1});
-const minify = str => c.minify(`a{${str}}`).styles;
+const minify = string => c.minify(`a{${string}}`).styles;
 
 const _default = {
   atrule: [],
@@ -33,12 +33,18 @@ const match = function (node, value, ignores = [], strict = false) {
 };
 
 const customMediaNameRegExp = /^custom-media$/i;
-const customMediaParamsRegExp = /^(--[A-z][\w-]*)\s+([\W\w]+)\s*$/;
+const customMediaParametersRegExp = /^(--[A-z][\w-]*)\s+([\W\w]+)\s*$/;
 
-const checkCustomMedia = node => node.type === 'atrule' && customMediaNameRegExp.test(node.name) && customMediaParamsRegExp.test(node.params);
+const checkCustomMedia = node =>
+  node.type === 'atrule' &&
+  customMediaNameRegExp.test(node.name) &&
+  customMediaParametersRegExp.test(node.params);
 
 const checkAtrule = function (node, ignores = []) {
-  return match(node, '@' + node.name, ignores, true) || match(node, node.params, ignores);
+  return (
+    match(node, '@' + node.name, ignores, true) ||
+    match(node, node.params, ignores)
+  );
 };
 
 const checkDecl = function (node, ignores = []) {
@@ -49,12 +55,12 @@ const checkDecl = function (node, ignores = []) {
   );
 };
 
-const normalize = (str = '', decl = true) => {
+const normalize = (string = '', decl = true) => {
   if (decl) {
-    str = minify(str);
+    string = minify(string);
   }
 
-  return str.replace(/"/g, '\'').trim();
+  return string.replace(/"/g, '\'').trim();
 };
 
 const getIdentifier = (node, selector = '') => {
@@ -62,9 +68,15 @@ const getIdentifier = (node, selector = '') => {
     case 'decl':
       return normalize(getIdentifier(node.parent), false);
     case 'rule':
-      return normalize(`${getIdentifier(node.parent)} ${selector || node.selector}`, false);
+      return normalize(
+        `${getIdentifier(node.parent)} ${selector || node.selector}`,
+        false
+      );
     case 'atrule':
-      return normalize(`${getIdentifier(node.parent)} @${node.name} ${node.params}`, false);
+      return normalize(
+        `${getIdentifier(node.parent)} @${node.name} ${node.params}`,
+        false
+      );
     default:
       return '';
   }
@@ -77,6 +89,8 @@ const getCssMapping = css => {
   } catch (error) {
     if (fs.existsSync(css)) {
       ast = postcss.parse(fs.readFileSync(css, 'utf8'), {from: undefined});
+    } else {
+      console.error(error.message);
     }
   }
 
@@ -140,21 +154,22 @@ const walker = function (root, options = _default) {
   });
 
   root.walkAtRules(rule => {
-    const remove = !checkCustomMedia(rule) && (!rule.nodes || rule.nodes.length === 0);
+    const remove =
+      !checkCustomMedia(rule) && (!rule.nodes || rule.nodes.length === 0);
     if (remove || checkAtrule(rule, options.atrule)) {
       rule.remove();
     }
   });
 };
 
-module.exports = postcss.plugin('postcss-discard', opts => {
-  const options = Object.assign({}, _default, opts || {});
+module.exports = postcss.plugin('postcss-discard', options_ => {
+  const options = Object.assign({}, _default, options_ || {});
 
   if (options.css) {
     const mapping = getCssMapping(options.css);
     options._testCss = (key, decl) => {
-      const arr = (mapping && mapping[key]) || [];
-      return arr.includes(normalize(decl.toString()));
+      const array = (mapping && mapping[key]) || [];
+      return array.includes(normalize(decl.toString()));
     };
   } else {
     options._testCss = () => false;

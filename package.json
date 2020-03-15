@@ -45,6 +45,7 @@
   "xo": {
     "space": 2,
     "rules": {
+      "unicorn/string-content": "off",
       "capitalized-comments": "off"
     }
   }

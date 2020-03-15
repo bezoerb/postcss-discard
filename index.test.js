@@ -57,8 +57,8 @@ main h1 > p {
 }
 `;
 
-function run(input, opts, output = '') {
-  return postcss([plugin(opts)])
+function run(input, options, output = '') {
+  return postcss([plugin(options)])
     .process(input, {from: undefined})
     .then(result => {
       expect(result.warnings()).toHaveLength(0);
