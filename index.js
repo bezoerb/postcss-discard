@@ -90,7 +90,7 @@ const getCssMapping = css => {
     if (fs.existsSync(css)) {
       ast = postcss.parse(fs.readFileSync(css, 'utf8'), {from: undefined});
     } else {
-      console.error(error.message);
+      throw error;
     }
   }
 
