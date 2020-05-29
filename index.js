@@ -163,7 +163,7 @@ const walker = function (root, options = _default) {
 };
 
 module.exports = postcss.plugin('postcss-discard', options_ => {
-  const options = Object.assign({}, _default, options_ || {});
+  const options = {..._default, ...options_ || {}};
 
   if (options.css) {
     const mapping = getCssMapping(options.css);

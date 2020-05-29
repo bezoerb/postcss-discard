@@ -1,5 +1,6 @@
 /* eslint-env jest */
 /* eslint import/order:0 */
+/* eslint promise/prefer-await-to-then:0 */
 'use strict';
 
 const fs = require('fs');
@@ -71,12 +72,16 @@ function run(input, options, output = '') {
 }
 
 const read = (i, type) => {
-  return fs.readFileSync(path.join(__dirname, `test/fixtures/${i}-${type}.css`), 'utf8');
+  return fs.readFileSync(
+    path.join(__dirname, `test/fixtures/${i}-${type}.css`),
+    'utf8'
+  );
 };
 
 const testCss = (i, r = true) => {
   const all = read(i, 'all');
-  const critical = (r && read(i, 'critical')) || `test/fixtures/${i}-critical.css`;
+  const critical =
+    (r && read(i, 'critical')) || `test/fixtures/${i}-critical.css`;
   const diff = read(i, 'diff');
 
   return run(all, {css: critical}, diff);
