@@ -24,13 +24,13 @@
     "clean-css": "^4.2.3",
     "lodash.isfunction": "^3.0.9",
     "lodash.isregexp": "^4.0.1",
-    "postcss": "^7.0.31"
+    "postcss": "^7.0.32"
   },
   "devDependencies": {
     "common-tags": "^1.8.0",
-    "jest": "^26.0.1",
+    "jest": "^26.4.2",
     "minimist": ">=1.2.2",
-    "xo": "^0.30.0"
+    "xo": "^0.33.1"
   },
   "scripts": {
     "jest": "jest",
