@@ -24,7 +24,7 @@
     "clean-css": "^4.2.3",
     "lodash.isfunction": "^3.0.9",
     "lodash.isregexp": "^4.0.1",
-    "postcss": "^7.0.32"
+    "postcss": "^8.2.10"
   },
   "devDependencies": {
     "common-tags": "^1.8.0",
