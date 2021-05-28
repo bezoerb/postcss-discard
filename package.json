@@ -17,20 +17,20 @@
     "url": "https://github.com/bezoerb/postcss-discard/issues"
   },
   "engines": {
-    "node": ">=10"
+    "node": "^10 || ^12 || >=14"
   },
   "homepage": "https://github.com/bezoerb/postcss-discard",
   "dependencies": {
-    "clean-css": "^4.2.3",
+    "clean-css": "^5.1.2",
     "lodash.isfunction": "^3.0.9",
     "lodash.isregexp": "^4.0.1",
-    "postcss": "^8.2.13"
+    "postcss": "^8.3.0"
   },
   "devDependencies": {
     "common-tags": "^1.8.0",
-    "jest": "^26.4.2",
+    "jest": "^27.0.1",
     "minimist": ">=1.2.2",
-    "xo": "^0.33.1"
+    "xo": "^0.39.1"
   },
   "scripts": {
     "jest": "jest",
