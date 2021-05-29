@@ -162,7 +162,7 @@ const walker = function (root, options = _default) {
   });
 };
 
-module.exports = postcss.plugin('postcss-discard', options_ => {
+module.exports = (options_ = {}) => {
   const options = {..._default, ...options_ || {}};
 
   if (options.css) {
@@ -175,8 +175,12 @@ module.exports = postcss.plugin('postcss-discard', options_ => {
     options._testCss = () => false;
   }
 
-  // Work with options here
-  return function (root) {
-    return walker(root, options);
+  return {
+    postcssPlugin: 'postcss-discard',
+    Once(root) {
+      return walker(root, options);
+    }
   };
-});
+};
+
+module.exports.postcss = true;
