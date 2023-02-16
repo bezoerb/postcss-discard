@@ -37,8 +37,10 @@
     "xo": "xo",
     "test": "npm run xo && npm run jest"
   },
+  "types": "./index.d.ts",
   "files": [
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "jest": {
     "testEnvironment": "node"
